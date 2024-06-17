@@ -1,0 +1,14 @@
+{
+   "name": "user/students.loc",
+   "autoload": {
+      "psr-4": {
+         "Controllers\\": "src/controllers/",
+         "Core\\": "src/core/",
+         "Core\\Database\\": "src/core/database/",
+         "Models\\": "src/models/"
+      }
+   },
+   "require": {
+      "symfony/var-dumper": "^6.0"
+   }
+}
