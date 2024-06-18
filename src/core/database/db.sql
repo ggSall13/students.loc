@@ -7,5 +7,6 @@ CREATE TABLE `student.loc`.`users`
 `yearBirth` INT NOT NULL , 
 `gender` VARCHAR(10) NOT NULL , 
 `grade` INT NOT NULL , 
-`groupName` VARCHAR(5) 
-NOT NULL, PRIMARY KEY (`id`), UNIQUE (`email`)) ENGINE = InnoDB;
+`groupName` VARCHAR(5) NOT NULL, 
+`token` VARCHAR(50) NULL,
+PRIMARY KEY (`id`), UNIQUE (`email`)) ENGINE = InnoDB;

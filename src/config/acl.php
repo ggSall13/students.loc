@@ -6,6 +6,6 @@ return [
    ],
 
    'register' => [
-      'profile',
+      'profile', 'change', 'reset', 'logout'
    ],
 ];

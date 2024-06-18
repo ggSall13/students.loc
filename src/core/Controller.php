@@ -31,7 +31,7 @@ abstract class Controller
    {
       if ($this->isAsl('all')) {
          return true;
-      } elseif (isset($_SESSION['account']) || isset($_COOKIE['account']) && $this->isAsl('register')) {
+      } elseif (isset($_COOKIE['account']) && $this->isAsl('register')) {
          return true;
       }
       return false;

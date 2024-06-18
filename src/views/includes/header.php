@@ -18,7 +18,7 @@
          </button>
          <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-               <?php if (isset($_SESSION['account']) || isset($_COOKIE['account'])) : ?>
+               <?php if (isset($_COOKIE['account'])) : ?>
                   <li class="nav-item">
                      <a class="nav-link" href="/profile">Профиль</a>
                   </li>

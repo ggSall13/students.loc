@@ -26,6 +26,18 @@ class Account extends Model
       return false;
    }
 
+   public function validateFieldsProfile($name, $lastName)
+   {
+      if (
+         $this->checkName($name) ||
+         $this->checkLastName($lastName)
+      ) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+
    public function validateFieldsReg($post)
    {
       // Иннициализация переменных
@@ -115,7 +127,7 @@ class Account extends Model
    }
 
    // проверка на сущестование email
-   public function isEmailExists($email, $type)
+   public function isEmailExists($email)
    {
       $params = ['email' => $email];
       $emailExist = $this->db->column("SELECT id FROM users WHERE email = :email", $params);
@@ -125,6 +137,12 @@ class Account extends Model
          return true;
       }
       return false;
+   }
+
+   //создание токена для смены почты
+   public function createToken()
+   {
+      return substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrsntyvwxyz", 25)), 0, 25);
    }
 
    // Регистрация пользователя(Запись в БД)
@@ -137,12 +155,13 @@ class Account extends Model
          'groupName' => $post['groupName'],
          'yearBirth' => $post['yearBirth'],
          'gender' => $post['gender'],
-         'password' => password_hash($post['password'], PASSWORD_DEFAULT)
+         'password' => password_hash($post['password'], PASSWORD_DEFAULT),
+         'grade' => rand(0, 300),
       ];
 
       $this->db->query(
          "INSERT INTO users SET email = :email, name = :name, lastName = :lastName, password = :password, 
-         yearBirth = :yearBirth, gender = :gender, groupName = :groupName",
+         yearBirth = :yearBirth, gender = :gender, groupName = :groupName, grade = :grade",
          $params
       );
    }
@@ -164,9 +183,67 @@ class Account extends Model
          $this->error = 'Неправильная почта или пароль';
          return true;
       } else {
-         $_SESSION['account'] = $account;
-         setcookie('account', json_encode($account), time() + 60 * 60 * 60 * 24 * 1000);
+         setcookie('account', json_encode($account), time() + 60 * 60 * 60 * 24 * 1000, '/');
          return false;
       }
+   }
+
+   public function prepareEmailToChange($email)
+   {
+      $token = $this->createToken();
+      $params = [
+         'token' => $token,
+         'email' => $email
+      ];
+
+      $this->db->query("UPDATE users SET token = :token WHERE email = :email", $params);
+      mail($email, 'Change Email', 'Зайдите для смены почты:' . PATH_URL . 'reset/' . $token);
+   }
+
+   public function isExistToken($email)
+   {
+      $params = ['email' => $email];
+
+      $userToken = $this->db->column("SELECT token FROM users WHERE email = :email", $params);
+
+      if (!$userToken) {
+         return true;
+      }
+   }
+
+   public function changeEmail($email, $id)
+   {
+      $params = [
+         'email' => $email,
+         'id' => $id,
+      ];
+
+      $this->db->query("UPDATE users SET email = :email, token = '' WHERE id = :id", $params);
+      setcookie('account', '', time() - 3600);
+
+      $params = [
+         'id' => $id,
+      ];
+      $account = $this->db->row("SELECT * FROM users WHERE id = :id", $params)[0];
+      setcookie('account', json_encode($account), time() + 60 * 60 * 60 * 24 * 1000, '/');
+   }
+
+   public function updateProfile($post, $id)
+   {
+      $params = [
+         'name' => $post['name'],
+         'lastName' => $post['lastName'],
+         'id' => $id,
+      ];
+
+      $this->db->query("UPDATE users SET name = :name, lastName = :lastName WHERE id = :id", $params);
+      setcookie('account', '', time() - 3600);
+
+      $params = [
+         'id' => $id
+      ];
+
+      $account = $this->db->row("SELECT * FROM users WHERE id = :id", $params)[0];
+      setcookie('account', json_encode($account), time() + 60 * 60 * 60 * 24 * 1000, '/');
    }
 }
