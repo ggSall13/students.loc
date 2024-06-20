@@ -2,7 +2,7 @@
 
 return [
    'all' => [
-      'main', 'register', 'login'
+      'main', 'register', 'login', 'search'
    ],
 
    'register' => [

@@ -6,6 +6,36 @@ return [
       'action' => 'main'
    ],
 
+   'sort/(?P<sort>\w+)' => [
+      'controller' => 'main',
+      'action' => 'main'
+   ],
+
+   'sort/(?P<sort>\w+)/(?P<desc>\w+)' => [
+      'controller' => 'main',
+      'action' => 'main'
+   ],
+
+   '(?P<page>\d+)' => [
+      'controller' => 'main',
+      'action' => 'main'
+   ],
+
+   'sort/(?P<sort>\w+)/(?P<page>\d+)' => [
+      'controller' => 'main',
+      'action' => 'main'
+   ],
+
+   'sort/(?P<sort>\w+)/(?P<desc>\w+)/(?P<page>\d+)' => [
+      'controller' => 'main',
+      'action' => 'main'
+   ],
+
+   'search' => [
+      'controller' => 'main',
+      'action' => 'search'
+   ],
+
    'register' => [
       'controller' => 'account',
       'action' => 'register'
